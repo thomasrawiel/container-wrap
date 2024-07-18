@@ -2,6 +2,12 @@
   "name": "traw/container-wrap",
   "type": "typo3-cms-extension",
   "description": "Add wrapper functions to make configuring b13/container easier",
+  "authors": [
+    {
+      "name": "Thomas Rawiel",
+      "role": "Developer"
+    }
+  ],
   "extra": {
     "typo3/cms": {
       "extension-key": "container_wrap"

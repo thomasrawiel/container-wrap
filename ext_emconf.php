@@ -1,7 +1,7 @@
 <?php
 
 $EM_CONF[$_EXTKEY] = [
-    'title' => 'Container wrapper',
+    'title' => 'Container wrapper functions',
     'description' => 'Wrapper functions to make configuring b13/container easier',
     'category' => 'misc',
     'author' => 'Thomas Rawiel',

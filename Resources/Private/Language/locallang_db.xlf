@@ -3,6 +3,9 @@
     <file source-language="en" datatype="plaintext" original="EXT:container_wrap/Resources/Private/Language/locallang_db.xlf" date="2024-08-18T20:22:32Z" product-name="container_wrap">
         <header/>
         <body>
+            <trans-unit id="tabs.container" resname="tabs.container">
+                <source>Container</source>
+            </trans-unit>
             <trans-unit id="palette.containerAppearance" resname="palette.containerAppearance">
                 <source>Appearance</source>
             </trans-unit>

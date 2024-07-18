@@ -170,11 +170,11 @@ class Container
                         $configuration['description'],
                         $configuration['columnConfiguration']
                     ))
-                        ->setGridTemplate($configuration['gridTemplate'] ?? 'EXT:lin_container/Resources/Private/Templates/Backend/Grid.html')
-                        ->setBackendTemplate($configuration['backendTemplate'] ?? 'EXT:lin_container/Resources/Private/Templates/Backend/Container.html')
+                        ->setGridTemplate($configuration['gridTemplate'] ?? 'EXT:container/Resources/Private/Templates/Grid.html')
+                        ->setBackendTemplate($configuration['backendTemplate'] ?? 'EXT:container/Resources/Private/Templates/Container.html')
                         ->setRegisterInNewContentElementWizard((bool)($configuration['registerInNewContentElementWizard'] ?? true))
                         ->setSaveAndCloseInNewContentElementWizard((bool)($configuration['saveAndCloseInNewContentElementWizard'] ?? true))
-                        ->setGroup($configuration['group'] ?? (!is_null($_EXTKEY) ? $_EXTKEY . '_container' : 'container'))
+                        ->setGroup($configuration['group'] ?? (!empty($_EXTKEY) ? $_EXTKEY . '_container' : 'container'))
                         ->setIcon($configuration['icon'] ?? 'EXT:container/Resources/Public/Icons/Extension.svg')
                 );
 
@@ -216,7 +216,8 @@ class Container
                  --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.appearance,
                 --palette--;;frames,
                 --palette--;;appearanceLinks,
-                --div--;LLL:EXT:lin_container/Resources/Private/Language/locallang_db.xlf:tabs.lin-container,
+                --div--;LLL:EXT:container_wrap/Resources/Private/Language/locallang_db.xlf:tabs.container,
+
                 $settings
                 $flexform
                 --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language,

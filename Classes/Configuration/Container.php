@@ -4,7 +4,6 @@ namespace TRAW\ContainerWrap\Configuration;
 
 use B13\Container\Tca\ContainerConfiguration;
 use B13\Container\Tca\Registry;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 /**
  * Class Container
@@ -176,69 +175,12 @@ class Container
                         ->setSaveAndCloseInNewContentElementWizard((bool)($configuration['saveAndCloseInNewContentElementWizard'] ?? true))
                         ->setGroup($configuration['group'] ?? (!empty($_EXTKEY) ? $_EXTKEY . '_container' : 'container'))
                         ->setIcon($configuration['icon'] ?? 'EXT:container/Resources/Public/Icons/Extension.svg')
+                        ->enableTCAHeaders($configuration['header'] ?? true)
+                        ->enableTCABodytext($configuration['bodytext'] ?? false)
+                        ->enableTCAAssets($configuration['media'] ?? false)
+                        ->setTCAFlexform($configuration['flexform'] ?? '')
                 );
-
-            $header = $bodytext = $media = $settings = $flexform = '';
-            //add normal header functionality
-            if ($configuration['header'] ?? true) {
-                $header = '--palette--;;headers,';
-            } else {
-                $header = 'header,';
-            }
-
-            //add bodytext
-            if ($configuration['bodytext'] ?? false) {
-                $bodytext = 'bodytext;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:bodytext_formlabel,';
-                $GLOBALS['TCA']['tt_content']['types'][$cType]['columnsOverrides']['bodytext']['config'] = [
-                    'rows' => 5,
-                    'enableRichtext' => true,
-                ];
-            }
-
-            if ($configuration['media'] ?? false) {
-                $media = '--div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.media,
-                            assets,';
-            }
-
-            if ($configuration['settings'] ?? true) {
-                $settings = '--palette--;;containerAppearance,';
-            }
-
-            if ($configuration['flexform'] ?? false) {
-                $flexform = '--palette--;;containerSettings,';
-            }
-
-            $GLOBALS['TCA']['tt_content']['types'][$cType]['showitem'] = "
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,--palette--;;general,
-                $header
-                $bodytext
-                $media
-                 --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.appearance,
-                --palette--;;frames,
-                --palette--;;appearanceLinks,
-                --div--;LLL:EXT:container_wrap/Resources/Private/Language/locallang_db.xlf:tabs.container,
-
-                $settings
-                $flexform
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language,
-                    --palette--;;language,
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,
-                    --palette--;;hidden,
-                    --palette--;;access,
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:categories,
-                    categories,
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:notes,
-                    rowDescription,
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended,
-                ";
-
-            if ($configuration['flexform'] ?? false) {
-                ExtensionManagementUtility::addPiFlexFormValue(
-                    '*',
-                    $configuration['flexform'],
-                    $cType
-                );
-            }
+            
         }
     }
 }

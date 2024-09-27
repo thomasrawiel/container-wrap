@@ -43,7 +43,6 @@ EXT:container let's you create nested content elements ("containers") in a very 
 
 See :ref:`EXT:container's Documentation <ext-container-docs>`
 
-
 However, if you want to add TYPO3's default fields like header, subheader, header_link, assets etc. to your container, you have to configure the corresponding TCA in your own distribution extension.
 
 This extension provides functions that aim to make this step easier and more straight-forward.

@@ -9,6 +9,7 @@
     }
   ],
   "require": {
+    "typo3/cms-core": "^11 || ^12 || ^13",
     "b13/container": "^2.2",
     "ichhabrecht/content-defender": "^3.3"
   },

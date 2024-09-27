@@ -12,6 +12,51 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 class Container
 {
     /**
+     * @var array|string[]
+     */
+    public static array $showItemConfigurationKeys = ['header', 'bodytext', 'media', 'settings', 'flexform'];
+
+    /**
+     * @param array       $containers
+     * @param string|null $_EXTKEY
+     */
+    public static function registerContainers(array $containers, ?string $_EXTKEY = null): void
+    {
+        foreach ($containers as $cType => $configuration) {
+            \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(Registry::class)
+                ->configureContainer(
+                    (new ContainerConfiguration(
+                        $cType,
+                        $configuration['label'],
+                        $configuration['description'],
+                        $configuration['columnConfiguration']
+                    ))
+                        ->setGridTemplate($configuration['gridTemplate'] ?? 'EXT:container/Resources/Private/Templates/Grid.html')
+                        ->setBackendTemplate($configuration['backendTemplate'] ?? 'EXT:container/Resources/Private/Templates/Container.html')
+                        ->setRegisterInNewContentElementWizard((bool)($configuration['registerInNewContentElementWizard'] ?? true))
+                        ->setSaveAndCloseInNewContentElementWizard((bool)($configuration['saveAndCloseInNewContentElementWizard'] ?? true))
+                        ->setGroup($configuration['group'] ?? (!empty($_EXTKEY) ? $_EXTKEY . '_container' : 'container'))
+                        ->setIcon($configuration['icon'] ?? 'EXT:container/Resources/Public/Icons/Extension.svg')
+                );
+
+
+            self::setupShowItemForContainer($cType, self::filterConfigurationForShowItem($configuration));
+        }
+    }
+
+    /**
+     * make sure the configuration for the showitem functions only contains the array keys we want
+     *
+     * @param array $configuration
+     *
+     * @return array
+     */
+    protected static function filterConfigurationForShowItem(array $configuration): array
+    {
+        return array_intersect_key($configuration, array_flip(self::$showItemConfigurationKeys));
+    }
+
+    /**
      * Disallow CTypes in all containers
      *
      * @param array $cTypes
@@ -156,29 +201,57 @@ class Container
     }
 
     /**
-     * @param array       $containers
-     * @param string|null $_EXTKEY
+     * setup showitem for all containers
+     *
+     * @param array $configuration
+     * @param array $exceptions
+     *
+     * @return void
      */
-    public static function registerContainers(array $containers, ?string $_EXTKEY = null): void
+    public static function setupShowItemForAllContainers(array $configuration, array $exceptions = []): void
     {
-        foreach ($containers as $cType => $configuration) {
-            \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(Registry::class)
-                ->configureContainer(
-                    (new ContainerConfiguration(
-                        $cType,
-                        $configuration['label'],
-                        $configuration['description'],
-                        $configuration['columnConfiguration']
-                    ))
-                        ->setGridTemplate($configuration['gridTemplate'] ?? 'EXT:container/Resources/Private/Templates/Grid.html')
-                        ->setBackendTemplate($configuration['backendTemplate'] ?? 'EXT:container/Resources/Private/Templates/Container.html')
-                        ->setRegisterInNewContentElementWizard((bool)($configuration['registerInNewContentElementWizard'] ?? true))
-                        ->setSaveAndCloseInNewContentElementWizard((bool)($configuration['saveAndCloseInNewContentElementWizard'] ?? true))
-                        ->setGroup($configuration['group'] ?? (!empty($_EXTKEY) ? $_EXTKEY . '_container' : 'container'))
-                        ->setIcon($configuration['icon'] ?? 'EXT:container/Resources/Public/Icons/Extension.svg')
-                );
+        foreach (array_keys($GLOBALS['TCA']['tt_content']['containerConfiguration']) as $cType) {
+            if (in_array($cType, $exceptions)) {
+                continue;
+            }
+            self::setupShowItemForContainer($cType, self::filterConfigurationForShowItem($configuration));
+        }
+    }
 
-            $header = $bodytext = $media = $settings = $flexform = '';
+    /**
+     * setup show item for some containers
+     *
+     * @param array $containerCTypes
+     * @param array $configuration
+     *
+     * @return void
+     */
+    public static function setupShowItemForContainers(array $containerCTypes, array $configuration): void
+    {
+        foreach ($containerCTypes as $cType) {
+            self::setupShowItemForContainer($cType, self::filterConfigurationForShowItem($configuration));
+        }
+    }
+
+    /**
+     * setup showitem for one container
+     *
+     * @param string $cType
+     * @param array  $configuration
+     *
+     * @return void
+     */
+    public static function setupShowItemForContainer(string $cType, array $configuration): void
+    {
+        $header = $bodytext = $media = $settings = $flexform = '';
+
+        if (isset($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType])) {
+            if (!isset($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['showitemOriginal'])) {
+                $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['showitemOriginal'] = $configuration;
+            }
+
+            $configuration = array_replace($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['showitemOriginal'], self::filterConfigurationForShowItem($configuration));
+
             //add normal header functionality
             if ($configuration['header'] ?? true) {
                 $header = '--palette--;;headers,';
@@ -217,7 +290,6 @@ class Container
                 --palette--;;frames,
                 --palette--;;appearanceLinks,
                 --div--;LLL:EXT:container_wrap/Resources/Private/Language/locallang_db.xlf:tabs.container,
-
                 $settings
                 $flexform
                 --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language,

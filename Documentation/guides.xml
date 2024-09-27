@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<guides xmlns="https://www.phpdoc.org/guides"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="https://www.phpdoc.org/guides ../vendor/phpdocumentor/guides-cli/resources/schema/guides.xsd"
+        links-are-relative="true"
+>
+    <extension class="\T3Docs\Typo3DocsTheme\DependencyInjection\Typo3DocsThemeExtension"
+               project-home="https://github.com/thomasrawiel/container-wrap/"
+               project-repository="https://github.com/thomasrawiel/container-wrap/"
+               project-issues="https://github.com/thomasrawiel/container-wrap/issues"
+               edit-on-github-branch="main"
+               edit-on-github="thomasrawiel/container-wrap"
+               typo3-core-preferred="stable"
+               interlink-shortcode="traw/container-wrap"
+    />
+    <project title="Container Wrap"
+             release="main"
+             version="main"
+             copyright="Thomas Rawiel"
+    />
+    <inventory id="b13container" url="https://extensions.typo3.org/extension/container"/>
+    <inventory id="b13containerDocs" url="https://github.com/b13/container?tab=readme-ov-file#extcontainer---a-typo3-extension-for-creating-nested-content-elements"/>
+
+</guides>

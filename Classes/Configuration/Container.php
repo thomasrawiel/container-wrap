@@ -253,7 +253,7 @@ class Container
             $configuration = array_replace($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['showitemOriginal'], self::filterConfigurationForShowItem($configuration));
 
             //add normal header functionality
-            if ($configuration['header'] ?? true) {
+            if ($configuration['header'] ?? false) {
                 $header = '--palette--;;headers,';
             } else {
                 $header = 'header,';
@@ -273,7 +273,7 @@ class Container
                             assets,';
             }
 
-            if ($configuration['settings'] ?? true) {
+            if ($configuration['settings'] ?? false) {
                 $settings = '--palette--;;containerAppearance,';
             }
 

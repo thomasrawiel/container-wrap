@@ -6,11 +6,14 @@
             <trans-unit id="tabs.container" resname="tabs.container">
                 <source>Container</source>
             </trans-unit>
-            <trans-unit id="palette.containerAppearance" resname="palette.containerAppearance">
-                <source>Appearance</source>
-            </trans-unit>
             <trans-unit id="palette.containerSettings" resname="palette.containerSettings">
                 <source>Settings</source>
+            </trans-unit>
+            <trans-unit id="palette.containerFlexform" resname="palette.containerFlexform">
+                <source>Flexform settings</source>
+            </trans-unit>
+            <trans-unit id="palette.containerAdditionalFields" resname="palette.containerAdditionalFields">
+                <source>Additional container settings</source>
             </trans-unit>
         </body>
     </file>

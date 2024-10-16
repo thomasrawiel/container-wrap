@@ -243,7 +243,7 @@ class Container
      */
     public static function setupShowItemForContainer(string $cType, array $configuration): void
     {
-        $header = $bodytext = $media = $settings = $flexform = '';
+        $header = $bodytext = $media = $settings = $flexform = $additionalFields = '';
 
         if (isset($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType])) {
             if (!isset($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['showitemOriginal'])) {
@@ -274,11 +274,15 @@ class Container
             }
 
             if ($configuration['settings'] ?? false) {
-                $settings = '--palette--;;containerAppearance,';
+                $settings = '--palette--;;containerSettings,';
             }
 
             if ($configuration['flexform'] ?? false) {
-                $flexform = '--palette--;;containerSettings,';
+                $flexform = '--palette--;;containerFlexform,';
+            }
+
+            if($configuration['additionalFields'] ?? false){
+                $additionalFields = '--palette--;;containerAdditionalFields,';
             }
 
             $GLOBALS['TCA']['tt_content']['types'][$cType]['showitem'] = "
@@ -302,6 +306,7 @@ class Container
                 --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:notes,
                     rowDescription,
                 --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended,
+                $additionalFields
                 ";
 
             if ($configuration['flexform'] ?? false) {

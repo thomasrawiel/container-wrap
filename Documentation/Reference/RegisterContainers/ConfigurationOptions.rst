@@ -138,8 +138,8 @@ Enable tt-content fields
    :Default: false
    :Path: `$config['your-ctype']['settings']`
 
-   If true, will add an empty palette `containerAppearance` in a new `--div--` "Container"
-   If you configure custom fields for containers you could add them here
+   If true, will add an empty palette `containerSettings` in a new `--div--` "Container"
+   If you configure custom fields for containers you could add them here, e.g. with `ExtensionManagementUtility::addFieldsToPalette('tt_content', 'containerSettings', 'tx_yourfield')`
 
 .. confval:: flexform
 
@@ -147,8 +147,17 @@ Enable tt-content fields
    :Default: false
    :Path: `$config['your-ctype']['flexform']`
 
-   If _not_ false, the palette `containerSettings` will be added to the Container `--div--`, which contains the `pi_flexform` field
+   If _not_ false, the palette `containerFlexform` will be added to the Container `--div--`, which contains the `pi_flexform` field
 
    If it contains a FILE string to a flexform xml, this will be added with `ExtensionManagementUtility::addPiFlexFormValue()` for this CType
 
    Example: `'flexform' => 'FILE:EXT:my_ext/Configuration/Flexforms/MyContainerSettings.xml',`
+
+.. confval:: additionalFields
+
+    :type: boolean
+    :Default: false
+    :Path: `$config['your-ctype']['additionalFields']`
+
+    If true, will add an empty palette `containerAdditionalFields` to the Extended tab
+    If you configure custom fields for containers you could add them here, e.g. with `ExtensionManagementUtility::addFieldsToPalette('tt_content', 'containerAdditionalFields', 'tx_yourfield')`

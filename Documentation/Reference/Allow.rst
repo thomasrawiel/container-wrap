@@ -8,7 +8,9 @@ Allow / Disallow CTypes
 
 .. _content-defender: https://github.com/IchHabRecht/content_defender/blob/main/README.md
 
-Since EXT:container_wrap requires `ichhabrecht/content-defender` it is possible to allow and disallow CTypes when registering your container configurations, as well as set a maxitems
+This requires the extension `ichhabrecht/content-defender` to be installed.
+
+It is possible to allow and disallow CTypes when registering your container configurations, as well as set a maxitems
 
 See :ref:`Content Defender README <content-defender>`
 

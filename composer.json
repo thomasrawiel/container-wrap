@@ -10,8 +10,10 @@
   ],
   "require": {
     "typo3/cms-core": "^11 || ^12 || ^13",
-    "b13/container": "^2.2",
-    "ichhabrecht/content-defender": "^3.3"
+    "b13/container": "^2.2 || ^3.0"
+  },
+  "suggest": {
+    "ichhabrecht/content-defender": "Define allowed or denied content element types in your backend layouts"
   },
   "license": "GPL-3.0-or-later",
   "autoload": {

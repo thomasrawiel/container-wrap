@@ -12,10 +12,11 @@ $EM_CONF[$_EXTKEY] = [
     'constraints' => [
         'depends' => [
             'typo3' => '11.0.0-13.9.99',
-            'container' => '1.4.0-2.99.99',
-            'content_defender' => '3.2.0-3.99.99',
+            'container' => '1.4.0-3.99.99',
         ],
         'conflicts' => [],
-        'suggests' => [],
+        'suggests' => [
+            'content_defender' => '',
+        ],
     ],
 ];

@@ -64,26 +64,28 @@ class Container
      */
     public static function disallowInAllContainers(array $cTypes, array $exceptions = []): void
     {
-        foreach ($GLOBALS['TCA']['tt_content']['containerConfiguration'] as $container => $configuration) {
-            if (in_array($container, $exceptions)) {
-                continue;
-            }
+        if (ExtensionManagementUtility::isLoaded('content_defender')) {
+            foreach ($GLOBALS['TCA']['tt_content']['containerConfiguration'] as $container => $configuration) {
+                if (in_array($container, $exceptions)) {
+                    continue;
+                }
 
-            foreach ($configuration['grid'] as $row => $columns) {
-                foreach ($columns as $column => $columnConfiguration) {
-                    if (isset($configuration['grid'][$row][$column]['allowed']['CType'])) {
-                        //is whitelist, skip
-                        continue;
+                foreach ($configuration['grid'] as $row => $columns) {
+                    foreach ($columns as $column => $columnConfiguration) {
+                        if (isset($configuration['grid'][$row][$column]['allowed']['CType'])) {
+                            //is whitelist, skip
+                            continue;
+                        }
+
+                        $disallowCTypes = $cTypes;
+                        if (isset($columnConfiguration['disallowed']['CType'])) {
+                            $alreadyDisallowedCTypes = explode(',', $columnConfiguration['disallowed']['CType']);
+                            $disallowCTypes = array_unique(array_merge($alreadyDisallowedCTypes, $cTypes));
+                        }
+
+                        $GLOBALS['TCA']['tt_content']['containerConfiguration'][$container]['grid'][$row][$column]['disallowed']['CType']
+                            = implode(',', $disallowCTypes);
                     }
-
-                    $disallowCTypes = $cTypes;
-                    if (isset($columnConfiguration['disallowed']['CType'])) {
-                        $alreadyDisallowedCTypes = explode(',', $columnConfiguration['disallowed']['CType']);
-                        $disallowCTypes = array_unique(array_merge($alreadyDisallowedCTypes, $cTypes));
-                    }
-
-                    $GLOBALS['TCA']['tt_content']['containerConfiguration'][$container]['grid'][$row][$column]['disallowed']['CType']
-                        = implode(',', $disallowCTypes);
                 }
             }
         }
@@ -98,26 +100,28 @@ class Container
      */
     public static function allowInAllContainers(array $cTypes, array $exceptions = []): void
     {
-        foreach ($GLOBALS['TCA']['tt_content']['containerConfiguration'] as $container => $configuration) {
-            if (in_array($container, $exceptions)) {
-                continue;
-            }
+        if (ExtensionManagementUtility::isLoaded('content_defender')) {
+            foreach ($GLOBALS['TCA']['tt_content']['containerConfiguration'] as $container => $configuration) {
+                if (in_array($container, $exceptions)) {
+                    continue;
+                }
 
-            foreach ($configuration['grid'] as $row => $columns) {
-                foreach ($columns as $column => $columnConfiguration) {
-                    if (isset($configuration['grid'][$row][$column]['disallowed']['CType'])) {
-                        //is blacklist, skip
-                        continue;
+                foreach ($configuration['grid'] as $row => $columns) {
+                    foreach ($columns as $column => $columnConfiguration) {
+                        if (isset($configuration['grid'][$row][$column]['disallowed']['CType'])) {
+                            //is blacklist, skip
+                            continue;
+                        }
+
+                        $allowCTypes = $cTypes;
+                        if (isset($columnConfiguration['allowed']['CType'])) {
+                            $alreadyAllowedCTypes = explode(',', $columnConfiguration['allowed']['CType']);
+                            $allowCTypes = array_unique(array_merge($alreadyAllowedCTypes, $cTypes));
+                        }
+
+                        $GLOBALS['TCA']['tt_content']['containerConfiguration'][$container]['grid'][$row][$column]['allowed']['CType']
+                            = implode(',', $allowCTypes);
                     }
-
-                    $allowCTypes = $cTypes;
-                    if (isset($columnConfiguration['allowed']['CType'])) {
-                        $alreadyAllowedCTypes = explode(',', $columnConfiguration['allowed']['CType']);
-                        $allowCTypes = array_unique(array_merge($alreadyAllowedCTypes, $cTypes));
-                    }
-
-                    $GLOBALS['TCA']['tt_content']['containerConfiguration'][$container]['grid'][$row][$column]['allowed']['CType']
-                        = implode(',', $allowCTypes);
                 }
             }
         }
@@ -132,29 +136,31 @@ class Container
      */
     public static function disallowInSpecificContainers(array $cTypes, array $disallowInContainers, array $disallowInColumns = []): void
     {
-        foreach ($disallowInContainers as $disallowCType) {
-            if (isset($GLOBALS['TCA']['tt_content']['containerConfiguration'][$disallowCType])) {
-                foreach ($GLOBALS['TCA']['tt_content']['containerConfiguration'][$disallowCType]['grid'] as $row => $columns) {
-                    foreach ($columns as $column => $columnConfiguration) {
-                        if (isset($columnConfiguration['allowed']['CType'])) {
-                            //is whitelist, skip
-                            continue;
+        if (ExtensionManagementUtility::isLoaded('content_defender')) {
+            foreach ($disallowInContainers as $disallowCType) {
+                if (isset($GLOBALS['TCA']['tt_content']['containerConfiguration'][$disallowCType])) {
+                    foreach ($GLOBALS['TCA']['tt_content']['containerConfiguration'][$disallowCType]['grid'] as $row => $columns) {
+                        foreach ($columns as $column => $columnConfiguration) {
+                            if (isset($columnConfiguration['allowed']['CType'])) {
+                                //is whitelist, skip
+                                continue;
+                            }
+
+                            if (!empty($disallowInColumns) && !in_array($columnConfiguration['colPos'], $disallowInColumns)) {
+                                continue;
+                            }
+
+                            $disallowCTypes = $cTypes;
+                            if (isset($columnConfiguration['disallowed']['CType'])) {
+                                $alreadyDisallowedCTypes = explode(',', $columnConfiguration['disallowed']['CType']);
+                                $disallowCTypes = array_unique(array_merge($alreadyDisallowedCTypes, $cTypes));
+                            }
+
+                            $GLOBALS['TCA']['tt_content']['containerConfiguration'][$disallowCType]['grid'][$row][$column]['disallowed']['CType']
+                                = implode(',', $disallowCTypes);
+
+                            unset($alreadyDisallowedCTypes);
                         }
-
-                        if (!empty($disallowInColumns) && !in_array($columnConfiguration['colPos'], $disallowInColumns)) {
-                            continue;
-                        }
-
-                        $disallowCTypes = $cTypes;
-                        if (isset($columnConfiguration['disallowed']['CType'])) {
-                            $alreadyDisallowedCTypes = explode(',', $columnConfiguration['disallowed']['CType']);
-                            $disallowCTypes = array_unique(array_merge($alreadyDisallowedCTypes, $cTypes));
-                        }
-
-                        $GLOBALS['TCA']['tt_content']['containerConfiguration'][$disallowCType]['grid'][$row][$column]['disallowed']['CType']
-                            = implode(',', $disallowCTypes);
-
-                        unset($alreadyDisallowedCTypes);
                     }
                 }
             }
@@ -171,29 +177,31 @@ class Container
      */
     public static function allowInSpecificContainers(array $cTypes, array $allowInContainers, array $allowInColumns = []): void
     {
-        foreach ($allowInContainers as $allowCType) {
-            if (isset($GLOBALS['TCA']['tt_content']['containerConfiguration'][$allowCType])) {
-                foreach ($GLOBALS['TCA']['tt_content']['containerConfiguration'][$allowCType]['grid'] as $row => $columns) {
-                    foreach ($columns as $column => $columnConfiguration) {
-                        if (isset($columnConfiguration['disallowed']['CType'])) {
-                            //is blacklist, skip
-                            continue;
+        if (ExtensionManagementUtility::isLoaded('content_defender')) {
+            foreach ($allowInContainers as $allowCType) {
+                if (isset($GLOBALS['TCA']['tt_content']['containerConfiguration'][$allowCType])) {
+                    foreach ($GLOBALS['TCA']['tt_content']['containerConfiguration'][$allowCType]['grid'] as $row => $columns) {
+                        foreach ($columns as $column => $columnConfiguration) {
+                            if (isset($columnConfiguration['disallowed']['CType'])) {
+                                //is blacklist, skip
+                                continue;
+                            }
+
+                            if (!empty($allowInColumns) && !in_array($columnConfiguration['colPos'], $allowInColumns)) {
+                                continue;
+                            }
+
+                            $allowCTypes = $cTypes;
+                            if (isset($columnConfiguration['allowed']['CType'])) {
+                                $alreadyAllowedCTypes = explode(',', $columnConfiguration['allowed']['CType']);
+                                $allowCTypes = array_unique(array_merge($alreadyAllowedCTypes, $cTypes));
+                            }
+
+                            $GLOBALS['TCA']['tt_content']['containerConfiguration'][$allowCType]['grid'][$row][$column]['allowed']['CType']
+                                = implode(',', $allowCTypes);
+
+                            unset($alreadyAllowedCTypes);
                         }
-
-                        if (!empty($allowInColumns) && !in_array($columnConfiguration['colPos'], $allowInColumns)) {
-                            continue;
-                        }
-
-                        $allowCTypes = $cTypes;
-                        if (isset($columnConfiguration['allowed']['CType'])) {
-                            $alreadyAllowedCTypes = explode(',', $columnConfiguration['allowed']['CType']);
-                            $allowCTypes = array_unique(array_merge($alreadyAllowedCTypes, $cTypes));
-                        }
-
-                        $GLOBALS['TCA']['tt_content']['containerConfiguration'][$allowCType]['grid'][$row][$column]['allowed']['CType']
-                            = implode(',', $allowCTypes);
-
-                        unset($alreadyAllowedCTypes);
                     }
                 }
             }
@@ -281,7 +289,7 @@ class Container
                 $flexform = '--palette--;;containerFlexform,';
             }
 
-            if($configuration['additionalFields'] ?? false){
+            if ($configuration['additionalFields'] ?? false) {
                 $additionalFields = '--palette--;;containerAdditionalFields,';
             }
 

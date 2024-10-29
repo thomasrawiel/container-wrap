@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace TRAW\ContainerWrap\Configuration;
 
@@ -23,22 +24,24 @@ class Container
     public static function registerContainers(array $containers, ?string $_EXTKEY = null): void
     {
         foreach ($containers as $cType => $configuration) {
-            \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(Registry::class)
-                ->configureContainer(
-                    (new ContainerConfiguration(
-                        $cType,
-                        $configuration['label'],
-                        $configuration['description'],
-                        $configuration['columnConfiguration']
-                    ))
-                        ->setGridTemplate($configuration['gridTemplate'] ?? 'EXT:container/Resources/Private/Templates/Grid.html')
-                        ->setBackendTemplate($configuration['backendTemplate'] ?? 'EXT:container/Resources/Private/Templates/Container.html')
-                        ->setRegisterInNewContentElementWizard((bool)($configuration['registerInNewContentElementWizard'] ?? true))
+            $containerConfiguration = new ContainerConfiguration(
+                $configuration['value'] ?? $cType,
+                $configuration['label'] ?? $cType,
+                $configuration['description'] ?? '',
+                $configuration['columnConfiguration'] ?? []
+            );
+            $containerConfiguration->setRegisterInNewContentElementWizard((bool)($configuration['registerInNewContentElementWizard'] ?? true))
                         ->setSaveAndCloseInNewContentElementWizard((bool)($configuration['saveAndCloseInNewContentElementWizard'] ?? true))
                         ->setGroup($configuration['group'] ?? (!empty($_EXTKEY) ? $_EXTKEY . '_container' : 'container'))
-                        ->setIcon($configuration['icon'] ?? 'EXT:container/Resources/Public/Icons/Extension.svg')
-                );
-
+                ->setIcon($configuration['icon'] ?? 'EXT:container/Resources/Public/Icons/Extension.svg');
+            if (!empty($configuration['backendTemplate'])) {
+                $containerConfiguration->setBackendTemplate($configuration['backendTemplate']);
+            }
+            if (!empty($configuration['gridTemplate'])) {
+                $containerConfiguration->setGridTemplate($configuration['gridTemplate']);
+            }
+            \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(Registry::class)
+                ->configureContainer($containerConfiguration);
 
             self::setupShowItemForContainer($cType, self::filterConfigurationForShowItem($configuration));
         }

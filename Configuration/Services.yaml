@@ -1,0 +1,9 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+  TRAW\ContainerWrap\DataProcessing\FlexFormProcessor:
+    tags:
+      - name: 'data.processor'
+        identifier: 'cw-flexform'

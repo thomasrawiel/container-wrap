@@ -7,3 +7,7 @@ services:
     tags:
       - name: 'data.processor'
         identifier: 'cw-flexform'
+  TRAW\ContainerWrap\DataProcessing\ContainerChildrenFilesProcessor:
+    tags:
+      - name: 'data.processor'
+        identifier: 'traw-container-children-files'

@@ -327,6 +327,13 @@ class Container
                     $cType
                 );
             }
+
+            if ($configuration['columnsOverrides'] ?? false) {
+                $GLOBALS['TCA']['tt_content']['types'][$cType]['columnsOverrides'] = array_merge_recursive(
+                    $GLOBALS['TCA']['tt_content']['types'][$cType]['columnsOverrides'] ?? [],
+                    $configuration['columnsOverrides']
+                );
+            }
         }
     }
 }

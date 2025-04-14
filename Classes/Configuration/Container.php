@@ -15,7 +15,7 @@ class Container
     /**
      * @var array|string[]
      */
-    public static array $showItemConfigurationKeys = ['header', 'bodytext', 'media', 'settings', 'flexform'];
+    public static array $showItemConfigurationKeys = ['header', 'bodytext', 'media', 'settings', 'flexform', 'additionalFields', 'columnsOverrides'];
 
     /**
      * @param array       $containers

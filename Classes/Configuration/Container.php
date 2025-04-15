@@ -15,7 +15,7 @@ class Container
     /**
      * @var array|string[]
      */
-    public static array $showItemConfigurationKeys = ['header', 'bodytext', 'media', 'settings', 'flexform', 'additionalFields', 'columnsOverrides'];
+    public static array $showItemConfigurationKeys = ['header', 'bodytext', 'media', 'settings', 'flexform', 'additionalFields', 'columnsOverrides', 'appearance', 'categories'];
 
     /**
      * @param array       $containers
@@ -31,8 +31,8 @@ class Container
                 $configuration['columnConfiguration'] ?? []
             );
             $containerConfiguration->setRegisterInNewContentElementWizard((bool)($configuration['registerInNewContentElementWizard'] ?? true))
-                        ->setSaveAndCloseInNewContentElementWizard((bool)($configuration['saveAndCloseInNewContentElementWizard'] ?? true))
-                        ->setGroup($configuration['group'] ?? (!empty($_EXTKEY) ? $_EXTKEY . '_container' : 'container'))
+                ->setSaveAndCloseInNewContentElementWizard((bool)($configuration['saveAndCloseInNewContentElementWizard'] ?? true))
+                ->setGroup($configuration['group'] ?? (!empty($_EXTKEY) ? $_EXTKEY . '_container' : 'container'))
                 ->setIcon($configuration['icon'] ?? 'EXT:container/Resources/Public/Icons/Extension.svg');
             if (!empty($configuration['backendTemplate'])) {
                 $containerConfiguration->setBackendTemplate($configuration['backendTemplate']);
@@ -254,7 +254,7 @@ class Container
      */
     public static function setupShowItemForContainer(string $cType, array $configuration): void
     {
-        $header = $bodytext = $media = $settings = $flexform = $additionalFields = '';
+        $bodytext = $media = $settings = $flexform = $additionalFields = $frames = $appearanceLinks = $categories = '';
 
         if (isset($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType])) {
             if (!isset($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['showitemOriginal'])) {
@@ -296,14 +296,26 @@ class Container
                 $additionalFields = '--palette--;;containerAdditionalFields,';
             }
 
+            if ($configuration['appearance']['frames'] ?? true) {
+                $frames = '--palette--;;frames,';
+            }
+
+            if ($configuration['appearance']['appearanceLinks'] ?? true) {
+                $appearanceLinks = ' --palette--;;appearanceLinks,';
+            }
+
+            if ($configuration['categories'] ?? true) {
+                $categories = 'categories,';
+            }
+
             $GLOBALS['TCA']['tt_content']['types'][$cType]['showitem'] = "
                 --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,--palette--;;general,
                 $header
                 $bodytext
                 $media
                  --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.appearance,
-                --palette--;;frames,
-                --palette--;;appearanceLinks,
+                $frames,
+                $appearanceLinks,
                 --div--;LLL:EXT:container_wrap/Resources/Private/Language/locallang_db.xlf:tabs.container,
                 $settings
                 $flexform
@@ -313,7 +325,7 @@ class Container
                     --palette--;;hidden,
                     --palette--;;access,
                 --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:categories,
-                    categories,
+                    $categories
                 --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:notes,
                     rowDescription,
                 --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended,

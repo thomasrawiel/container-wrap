@@ -153,6 +153,7 @@ Enable tt-content fields
 
    Example: `'flexform' => 'FILE:EXT:my_ext/Configuration/Flexforms/MyContainerSettings.xml',`
 
+
 .. confval:: additionalFields
 
     :type: boolean
@@ -161,3 +162,13 @@ Enable tt-content fields
 
     If true, will add an empty palette `containerAdditionalFields` to the Extended tab
     If you configure custom fields for containers you could add them here, e.g. with `ExtensionManagementUtility::addFieldsToPalette('tt_content', 'containerAdditionalFields', 'tx_yourfield')`
+
+
+.. confval:: columnsOverrides
+
+ :type: array
+ :Default: false
+ :Path: `$config['your-ctype']['columnsOverrides']`
+
+ Changed or added ['columns'] field display definitions. See :ref:`columnsOverrides <t3tca:confval-types-columnsoverrides>`
+

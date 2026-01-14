@@ -73,6 +73,10 @@ class FlexFormProcessor implements DataProcessorInterface
         if (!is_string($originalValue)) {
             return $processedData;
         }
+        //Breaking: #107945 - Class FlexFormService merged into FlexFormTools
+        //@todo: We will migrate this, when we drop older version support
+        //until then:
+        // @extensionScannerIgnoreLine
         $flexFormData = GeneralUtility::makeInstance(FlexFormService::class)
             ->convertFlexFormContentToArray($originalValue);
 

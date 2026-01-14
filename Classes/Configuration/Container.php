@@ -5,7 +5,9 @@ namespace TRAW\ContainerWrap\Configuration;
 
 use B13\Container\Tca\ContainerConfiguration;
 use B13\Container\Tca\Registry;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class Container
@@ -31,8 +33,8 @@ class Container
                 $configuration['columnConfiguration'] ?? []
             );
             $containerConfiguration->setRegisterInNewContentElementWizard((bool)($configuration['registerInNewContentElementWizard'] ?? true))
-                        ->setSaveAndCloseInNewContentElementWizard((bool)($configuration['saveAndCloseInNewContentElementWizard'] ?? true))
-                        ->setGroup($configuration['group'] ?? (!empty($_EXTKEY) ? $_EXTKEY . '_container' : 'container'))
+                ->setSaveAndCloseInNewContentElementWizard((bool)($configuration['saveAndCloseInNewContentElementWizard'] ?? true))
+                ->setGroup($configuration['group'] ?? (!empty($_EXTKEY) ? $_EXTKEY . '_container' : 'container'))
                 ->setIcon($configuration['icon'] ?? 'EXT:container/Resources/Public/Icons/Extension.svg');
             if (!empty($configuration['backendTemplate'])) {
                 $containerConfiguration->setBackendTemplate($configuration['backendTemplate']);
@@ -321,11 +323,18 @@ class Container
                 ";
 
             if ($configuration['flexform'] ?? false) {
-                ExtensionManagementUtility::addPiFlexFormValue(
-                    '*',
-                    $configuration['flexform'],
-                    $cType
-                );
+                if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 14) {
+                    // @extensionScannerIgnoreLine
+                    ExtensionManagementUtility::addPiFlexFormValue(
+                        '*',
+                        $configuration['flexform'],
+                        $cType
+                    );
+                } else {
+                    $GLOBALS['TCA']['tt_content']['types'][$cType]['columnsOverrides']['pi_flexform']['config']['ds']
+                        = $configuration['flexform'];
+                }
+
             }
         }
     }

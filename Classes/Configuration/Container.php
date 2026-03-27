@@ -42,6 +42,33 @@ class Container
             if (!empty($configuration['gridTemplate'])) {
                 $containerConfiguration->setGridTemplate($configuration['gridTemplate']);
             }
+            if (!empty($configuration['gridLayoutPaths'])) {
+                if (is_array($configuration['gridLayoutPaths'])) {
+                    $containerConfiguration->setGridLayoutPaths(array_unique(array_values($configuration['gridLayoutPaths'])));
+                } elseif (is_string($configuration['gridLayoutPaths'])) {
+                    if (!in_array($configuration['gridLayoutPaths'], $containerConfiguration->getGridLayoutPaths(), true)) {
+                        $containerConfiguration->addGridLayoutPath($configuration['gridLayoutPaths']);
+                    }
+                }
+            }
+            if (!empty($configuration['gridPartialPaths'])) {
+                if (is_array($configuration['gridPartialPaths'])) {
+                    $containerConfiguration->setGridPartialPaths(array_unique(array_values($configuration['gridPartialPaths'])));
+                } elseif (is_string($configuration['gridPartialPaths'])) {
+                    if (!in_array($configuration['gridPartialPaths'], $containerConfiguration->getGridPartialPaths(), true)) {
+                        $containerConfiguration->addGridPartialPath($configuration['gridPartialPaths']);
+                    }
+                }
+            }
+            if (isset($configuration['relativeToField']) && $configuration['relativeToField'] !== '') {
+                $containerConfiguration->setRelativeToField((string)$configuration['relativeToField']);
+            }
+            if (isset($configuration['relativePosition']) && $configuration['relativePosition'] !== '') {
+                $containerConfiguration->setRelativePosition((string)$configuration['relativePosition']);
+            }
+            if (!empty($configuration['defaultValues']) && is_array($configuration['defaultValues'])) {
+                $containerConfiguration->setDefaultValues($configuration['defaultValues']);
+            }
             \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(Registry::class)
                 ->configureContainer($containerConfiguration);
 

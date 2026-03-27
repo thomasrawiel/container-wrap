@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace TRAW\ContainerWrap\Configuration;
@@ -19,10 +20,6 @@ class Container
      */
     public static array $showItemConfigurationKeys = ['header', 'bodytext', 'media', 'settings', 'flexform', 'additionalFields', 'columnsOverrides', 'appearance', 'categories'];
 
-    /**
-     * @param array       $containers
-     * @param string|null $_EXTKEY
-     */
     public static function registerContainers(array $containers, ?string $_EXTKEY = null): void
     {
         foreach ($containers as $cType => $configuration) {
@@ -34,14 +31,16 @@ class Container
             );
             $containerConfiguration->setRegisterInNewContentElementWizard((bool)($configuration['registerInNewContentElementWizard'] ?? true))
                 ->setSaveAndCloseInNewContentElementWizard((bool)($configuration['saveAndCloseInNewContentElementWizard'] ?? true))
-                ->setGroup($configuration['group'] ?? (!empty($_EXTKEY) ? $_EXTKEY . '_container' : 'container'))
+                ->setGroup($configuration['group'] ?? (in_array($_EXTKEY, [null, '', '0'], true) ? 'container' : $_EXTKEY . '_container'))
                 ->setIcon($configuration['icon'] ?? 'EXT:container/Resources/Public/Icons/Extension.svg');
             if (!empty($configuration['backendTemplate'])) {
                 $containerConfiguration->setBackendTemplate($configuration['backendTemplate']);
             }
+
             if (!empty($configuration['gridTemplate'])) {
                 $containerConfiguration->setGridTemplate($configuration['gridTemplate']);
             }
+
             if (!empty($configuration['gridLayoutPaths'])) {
                 if (is_array($configuration['gridLayoutPaths'])) {
                     $containerConfiguration->setGridLayoutPaths(array_unique(array_values($configuration['gridLayoutPaths'])));
@@ -51,6 +50,7 @@ class Container
                     }
                 }
             }
+
             if (!empty($configuration['gridPartialPaths'])) {
                 if (is_array($configuration['gridPartialPaths'])) {
                     $containerConfiguration->setGridPartialPaths(array_unique(array_values($configuration['gridPartialPaths'])));
@@ -60,15 +60,19 @@ class Container
                     }
                 }
             }
+
             if (isset($configuration['relativeToField']) && $configuration['relativeToField'] !== '') {
                 $containerConfiguration->setRelativeToField((string)$configuration['relativeToField']);
             }
+
             if (isset($configuration['relativePosition']) && $configuration['relativePosition'] !== '') {
                 $containerConfiguration->setRelativePosition((string)$configuration['relativePosition']);
             }
+
             if (!empty($configuration['defaultValues']) && is_array($configuration['defaultValues'])) {
                 $containerConfiguration->setDefaultValues($configuration['defaultValues']);
             }
+
             \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(Registry::class)
                 ->configureContainer($containerConfiguration);
 
@@ -79,9 +83,7 @@ class Container
     /**
      * make sure the configuration for the showitem functions only contains the array keys we want
      *
-     * @param array $configuration
      *
-     * @return array
      */
     protected static function filterConfigurationForShowItem(array $configuration): array
     {
@@ -90,9 +92,6 @@ class Container
 
     /**
      * Disallow CTypes in all containers
-     *
-     * @param array $cTypes
-     * @param array $exceptions
      */
     public static function disallowInAllContainers(array $cTypes, array $exceptions = []): void
     {
@@ -111,7 +110,7 @@ class Container
 
                         $disallowCTypes = $cTypes;
                         if (isset($columnConfiguration['disallowed']['CType'])) {
-                            $alreadyDisallowedCTypes = explode(',', $columnConfiguration['disallowed']['CType']);
+                            $alreadyDisallowedCTypes = GeneralUtility::trimExplode(',', (string)$columnConfiguration['disallowed']['CType'], true);
                             $disallowCTypes = array_unique(array_merge($alreadyDisallowedCTypes, $cTypes));
                         }
 
@@ -126,9 +125,6 @@ class Container
     /**
      * Allow CTypes in all containers
      * Note: automatically excludes everything else
-     *
-     * @param array $cTypes
-     * @param array $exceptions
      */
     public static function allowInAllContainers(array $cTypes, array $exceptions = []): void
     {
@@ -147,7 +143,7 @@ class Container
 
                         $allowCTypes = $cTypes;
                         if (isset($columnConfiguration['allowed']['CType'])) {
-                            $alreadyAllowedCTypes = explode(',', $columnConfiguration['allowed']['CType']);
+                            $alreadyAllowedCTypes = GeneralUtility::trimExplode(',', (string)$columnConfiguration['allowed']['CType'], true);
                             $allowCTypes = array_unique(array_merge($alreadyAllowedCTypes, $cTypes));
                         }
 
@@ -161,10 +157,6 @@ class Container
 
     /**
      * Disallow CTypes in specific containers and columns
-     *
-     * @param array $cTypes
-     * @param array $disallowInContainers
-     * @param array $disallowInColumns
      */
     public static function disallowInSpecificContainers(array $cTypes, array $disallowInContainers, array $disallowInColumns = []): void
     {
@@ -178,13 +170,13 @@ class Container
                                 continue;
                             }
 
-                            if (!empty($disallowInColumns) && !in_array($columnConfiguration['colPos'], $disallowInColumns)) {
+                            if ($disallowInColumns !== [] && !in_array($columnConfiguration['colPos'], $disallowInColumns)) {
                                 continue;
                             }
 
                             $disallowCTypes = $cTypes;
                             if (isset($columnConfiguration['disallowed']['CType'])) {
-                                $alreadyDisallowedCTypes = explode(',', $columnConfiguration['disallowed']['CType']);
+                                $alreadyDisallowedCTypes = GeneralUtility::trimExplode(',', (string)$columnConfiguration['disallowed']['CType'], true);
                                 $disallowCTypes = array_unique(array_merge($alreadyDisallowedCTypes, $cTypes));
                             }
 
@@ -202,10 +194,6 @@ class Container
     /**
      * Allow CTypes in specific containers and columns
      * Note: automatically excludes everything else
-     *
-     * @param array $cTypes
-     * @param array $allowInContainers
-     * @param array $allowInColumns
      */
     public static function allowInSpecificContainers(array $cTypes, array $allowInContainers, array $allowInColumns = []): void
     {
@@ -219,13 +207,13 @@ class Container
                                 continue;
                             }
 
-                            if (!empty($allowInColumns) && !in_array($columnConfiguration['colPos'], $allowInColumns)) {
+                            if ($allowInColumns !== [] && !in_array($columnConfiguration['colPos'], $allowInColumns)) {
                                 continue;
                             }
 
                             $allowCTypes = $cTypes;
                             if (isset($columnConfiguration['allowed']['CType'])) {
-                                $alreadyAllowedCTypes = explode(',', $columnConfiguration['allowed']['CType']);
+                                $alreadyAllowedCTypes = GeneralUtility::trimExplode(',', (string)$columnConfiguration['allowed']['CType'], true);
                                 $allowCTypes = array_unique(array_merge($alreadyAllowedCTypes, $cTypes));
                             }
 
@@ -242,11 +230,6 @@ class Container
 
     /**
      * setup showitem for all containers
-     *
-     * @param array $configuration
-     * @param array $exceptions
-     *
-     * @return void
      */
     public static function setupShowItemForAllContainers(array $configuration, array $exceptions = []): void
     {
@@ -254,17 +237,13 @@ class Container
             if (in_array($cType, $exceptions)) {
                 continue;
             }
+
             self::setupShowItemForContainer($cType, self::filterConfigurationForShowItem($configuration));
         }
     }
 
     /**
      * setup show item for some containers
-     *
-     * @param array $containerCTypes
-     * @param array $configuration
-     *
-     * @return void
      */
     public static function setupShowItemForContainers(array $containerCTypes, array $configuration): void
     {
@@ -275,16 +254,17 @@ class Container
 
     /**
      * setup showitem for one container
-     *
-     * @param string $cType
-     * @param array  $configuration
-     *
-     * @return void
      */
     public static function setupShowItemForContainer(string $cType, array $configuration): void
     {
-        $bodytext = $media = $settings = $flexform = $additionalFields = $frames = $appearanceLinks = $categories = '';
-
+        $bodytext = '';
+        $media = '';
+        $settings = '';
+        $flexform = '';
+        $additionalFields = '';
+        $frames = '';
+        $appearanceLinks = '';
+        $categories = '';
         if (isset($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType])) {
             if (!isset($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['showitemOriginal'])) {
                 $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['showitemOriginal'] = $configuration;
@@ -293,11 +273,7 @@ class Container
             $configuration = array_replace($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['showitemOriginal'], self::filterConfigurationForShowItem($configuration));
 
             //add normal header functionality
-            if ($configuration['header'] ?? false) {
-                $header = '--palette--;;headers,';
-            } else {
-                $header = 'header,';
-            }
+            $header = $configuration['header'] ?? false ? '--palette--;;headers,' : 'header,';
 
             //add bodytext
             if ($configuration['bodytext'] ?? false) {
@@ -339,26 +315,26 @@ class Container
 
             $GLOBALS['TCA']['tt_content']['types'][$cType]['showitem'] = "
                 --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,--palette--;;general,
-                $header
-                $bodytext
-                $media
+                {$header}
+                {$bodytext}
+                {$media}
                  --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.appearance,
-                $frames,
-                $appearanceLinks,
+                {$frames},
+                {$appearanceLinks},
                 --div--;LLL:EXT:container_wrap/Resources/Private/Language/locallang_db.xlf:tabs.container,
-                $settings
-                $flexform
+                {$settings}
+                {$flexform}
                 --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language,
                     --palette--;;language,
                 --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,
                     --palette--;;hidden,
                     --palette--;;access,
                 --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:categories,
-                    $categories
+                    {$categories}
                 --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:notes,
                     rowDescription,
                 --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended,
-                $additionalFields
+                {$additionalFields}
                 ";
 
             if ($configuration['flexform'] ?? false) {

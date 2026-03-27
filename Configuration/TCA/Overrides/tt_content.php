@@ -1,6 +1,6 @@
 <?php
 
-defined('TYPO3') or die('Access denied.');
+defined('TYPO3') || die('Access denied.');
 
 $GLOBALS['TCA']['tt_content']['palettes']['containerSettings'] = [
     'label' => 'LLL:EXT:container_wrap/Resources/Private/Language/locallang_db.xlf:palette.containerSettings',

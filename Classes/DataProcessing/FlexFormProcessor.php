@@ -48,6 +48,9 @@ use TYPO3\CMS\Frontend\ContentObject\DataProcessorInterface;
  */
 class FlexFormProcessor implements DataProcessorInterface
 {
+    public function __construct(private readonly \TYPO3\CMS\Core\Service\FlexFormService $flexFormService)
+    {
+    }
     /**
      * @param ContentObjectRenderer $cObj The data of the content element or page
      * @param array $contentObjectConfiguration The configuration of Content Object
@@ -73,11 +76,12 @@ class FlexFormProcessor implements DataProcessorInterface
         if (!is_string($originalValue)) {
             return $processedData;
         }
+        
         //Breaking: #107945 - Class FlexFormService merged into FlexFormTools
         //@todo: We will migrate this, when we drop older version support
         //until then:
         // @extensionScannerIgnoreLine
-        $flexFormData = GeneralUtility::makeInstance(FlexFormService::class)
+        $flexFormData = $this->flexFormService
             ->convertFlexFormContentToArray($originalValue);
 
         // Set the target variable

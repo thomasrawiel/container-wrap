@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace TRAW\ContainerWrap\DataProcessing;
@@ -37,16 +38,7 @@ use TYPO3\CMS\Frontend\ContentObject\DataProcessorInterface;
  */
 final class ContainerChildrenFilesProcessor implements DataProcessorInterface
 {
-    /**
-     *
-     * @param ContentObjectRenderer $cObj
-     * @param array                 $contentObjectConfiguration
-     * @param array                 $processorConfiguration
-     * @param array                 $processedData
-     *
-     * @return array
-     */
-    public function process(ContentObjectRenderer $cObj, array $contentObjectConfiguration, array $processorConfiguration, array $processedData)
+    public function process(ContentObjectRenderer $cObj, array $contentObjectConfiguration, array $processorConfiguration, array $processedData): array
     {
         if (isset($processorConfiguration['if.']) && !$cObj->checkIf($processorConfiguration['if.'])) {
             return $processedData;
@@ -65,7 +57,7 @@ final class ContainerChildrenFilesProcessor implements DataProcessorInterface
             }
         }
 
-        if (empty($filesOfAllChildren)) {
+        if ($filesOfAllChildren === []) {
             return $processedData;
         }
 

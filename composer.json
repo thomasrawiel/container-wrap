@@ -1,29 +1,33 @@
 {
-  "name": "traw/container-wrap",
-  "type": "typo3-cms-extension",
-  "description": "Add wrapper functions to make configuring b13/container easier",
-  "authors": [
-    {
-      "name": "Thomas Rawiel",
-      "role": "Developer"
-    }
-  ],
-  "require": {
-    "typo3/cms-core": "^13.4 || ^14.0",
-    "b13/container": "^4.0"
-  },
-  "suggest": {
-    "ichhabrecht/content-defender": "Define allowed or denied content element types in your backend layouts"
-  },
-  "license": "GPL-3.0-or-later",
-  "autoload": {
-    "psr-4": {
-      "TRAW\\ContainerWrap\\": "Classes/"
-    }
-  },
-  "extra": {
-    "typo3/cms": {
-      "extension-key": "container_wrap"
-    }
-  }
+	"name": "traw/container-wrap",
+	"type": "typo3-cms-extension",
+	"description": "Add wrapper functions to make configuring b13/container easier",
+	"authors": [
+		{
+			"name": "Thomas Rawiel",
+			"role": "Developer"
+		}
+	],
+	"require": {
+		"typo3/cms-core": "^13.4 || ^14.0",
+		"b13/container": "^4.0"
+	},
+	"suggest": {
+		"ichhabrecht/content-defender": "Define allowed or denied content element types in your backend layouts"
+	},
+	"license": "GPL-3.0-or-later",
+	"autoload": {
+		"psr-4": {
+			"TRAW\\ContainerWrap\\": "Classes/"
+		}
+	},
+	"extra": {
+		"typo3/cms": {
+			"extension-key": "container_wrap",
+			"version": "2.5.0",
+			"Package": {
+				"providesPackages": {}
+			}
+		}
+	}
 }

@@ -353,7 +353,7 @@ class Container
             }
 
             if ($configuration['columnsOverrides'] ?? false) {
-                $GLOBALS['TCA']['tt_content']['types'][$cType]['columnsOverrides'] = array_merge_recursive(
+                $GLOBALS['TCA']['tt_content']['types'][$cType]['columnsOverrides'] = array_replace_recursive(
                     $GLOBALS['TCA']['tt_content']['types'][$cType]['columnsOverrides'] ?? [],
                     $configuration['columnsOverrides']
                 );

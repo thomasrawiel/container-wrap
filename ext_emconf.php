@@ -2,12 +2,12 @@
 
 $EM_CONF[$_EXTKEY] = [
     'title' => 'Container wrapper functions',
-    'description' => 'Wrapper functions to make configuring b13/container easier',
+    'description' => 'Add wrapper functions to make configuring b13/container easier',
     'category' => 'misc',
     'author' => 'Thomas Rawiel',
     'author_email' => 'thomas.rawiel@gmail.com',
     'state' => 'stable',
-    'version' => '2.5.2',
+    'version' => '2.5.3',
     'constraints' => [
         'depends' => [
             'typo3' => '13.4.0-14.9.99',

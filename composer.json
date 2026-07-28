@@ -24,7 +24,7 @@
 	"extra": {
 		"typo3/cms": {
 			"extension-key": "container_wrap",
-			"version": "2.5.2",
+			"version": "2.5.3",
 			"Package": {
 				"providesPackages": {}
 			}

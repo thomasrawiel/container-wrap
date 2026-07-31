@@ -15,3 +15,7 @@ https://extensions.typo3.org/extension/container
 
 ## ichhabrecht/content-defender
 https://extensions.typo3.org/extension/content_defender
+
+
+## Credits
+Extension icon is derived from: https://github.com/b13/container/blob/master/Resources/Public/Icons/Extension.svg

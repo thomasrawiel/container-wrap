@@ -48,6 +48,10 @@ use TYPO3\CMS\Frontend\ContentObject\DataProcessorInterface;
  */
 class FlexFormProcessor implements DataProcessorInterface
 {
+    //Breaking: #107945 - Class FlexFormService merged into FlexFormTools
+    //@todo: We will migrate this, when we drop older version support
+    //until then:
+    // @extensionScannerIgnoreLine
     public function __construct(private readonly \TYPO3\CMS\Core\Service\FlexFormService $flexFormService)
     {
     }
